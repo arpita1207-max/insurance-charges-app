@@ -1,0 +1,75 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: python src/load_data.py --config=params.yaml
+    deps:
+    - path: data_given/insurance.csv
+      hash: md5
+      md5: d5364d06246fb4bfa4cc7d1ee89ebd0d
+      size: 55628
+    - path: src/get_data.py
+      hash: md5
+      md5: 6395606cf2eb1129a291c8fd80f3ae25
+      size: 782
+    - path: src/load_data.py
+      hash: md5
+      md5: 0ee45dce4c8e2e9e6774ac9bfcaa1119
+      size: 569
+    outs:
+    - path: data/raw/insurance.csv
+      hash: md5
+      md5: d0b06a8f7d5e62bfa3cabefb694c7168
+      size: 55690
+  split_data:
+    cmd: python src/split_data.py --config=params.yaml
+    deps:
+    - path: data/raw/insurance.csv
+      hash: md5
+      md5: d0b06a8f7d5e62bfa3cabefb694c7168
+      size: 55690
+    - path: src/split_data.py
+      hash: md5
+      md5: 25cb929fd4c4816569c2e26487b845c1
+      size: 758
+    outs:
+    - path: data/processed/test_insurance.csv
+      hash: md5
+      md5: 77e409118518f1ae55e0a380667efa61
+      size: 13991
+    - path: data/processed/train_insurance.csv
+      hash: md5
+      md5: 3bfc4eb29738eabe3b18eb08a7b7fd0a
+      size: 41743
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - path: data/processed/test_insurance.csv
+      hash: md5
+      md5: 77e409118518f1ae55e0a380667efa61
+      size: 13991
+    - path: data/processed/train_insurance.csv
+      hash: md5
+      md5: 3bfc4eb29738eabe3b18eb08a7b7fd0a
+      size: 41743
+    - path: src/train_and_evaluate.py
+      hash: md5
+      md5: a6e95f38f922542e5be50f30c36fc36b
+      size: 4212
+    params:
+      params.yaml:
+        estimators.rfr.params.max_depth: 3
+        estimators.rfr.params.min_samples_split: 5
+        estimators.rfr.params.n_estimators: 120
+    outs:
+    - path: report/params.json
+      hash: md5
+      md5: 8cff2a9cb71d6884c14dcd2ca15bf5ef
+      size: 61
+    - path: report/scores.json
+      hash: md5
+      md5: 2fdcccafc7f1cc4d7d57aff0f9a1a129
+      size: 85
+    - path: saved_models/model.joblib
+      hash: md5
+      md5: 4bf7850f576c07a634c7bb9b1b060fa8
+      size: 168289

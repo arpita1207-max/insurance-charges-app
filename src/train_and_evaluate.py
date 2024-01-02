@@ -12,19 +12,28 @@ from sklearn.preprocessing import OneHotEncoder,StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
+import joblib
+import json
 
 
 def grid_search(x_train_trf,y_train):
+    #param grid to pass to grid search
      param_grid={
     'n_estimators':[100,120,140],
     'max_depth':[3,5,7,9],
     'min_samples_split':[5,10,12,15]}
+     # fit in the grid search cv
      gsv=GridSearchCV(RandomForestRegressor(),param_grid,cv=5,scoring='r2',verbose=2,refit=True)
      gsv.fit(x_train_trf,y_train)
      best_model=gsv.best_estimator_
-     return best_model
+     best_params=gsv.best_params_
+     return best_model,best_params
 
-
+def calucate_error(y_test,y_pred):
+    mean_abs_err=mae(y_test,y_pred)
+    root_mean_squ_err=np.sqrt(mse(y_test,y_pred))
+    r2_Score=r2(y_test,y_pred)
+    return mean_abs_err,root_mean_squ_err,r2_Score
 
 
 def train_and_evaluate(config_path):
@@ -34,6 +43,7 @@ def train_and_evaluate(config_path):
     test_size=config['split_data']['test_size']
     random_state=config['base']['random_state']
     target_col=config['base']['target_col']
+    model_dir=config['model_dir']
     
    
 
@@ -55,38 +65,54 @@ def train_and_evaluate(config_path):
                      )
     
     
-    x_train_trf=trf.fit_transform(x_train)
-    best_model=grid_search(x_train_trf,y_train)
+    #x_train_trf=trf.fit_transform(x_train)
+    #best_model,best_params=grid_search(x_train_trf,y_train)
     
+    max_depth=config['estimators']['rfr']['params']['max_depth']
+    min_samples_split=config['estimators']['rfr']['params']['min_samples_split']
+    n_estimators=config['estimators']['rfr']['params']['n_estimators']
     
     pipeline=Pipeline([
         ('trf',trf),
-        ('rf',best_model)
-         #RandomForestRegressor(max_depth=3,min_samples_split=5,n_estimators=120))
+        ('rf',
+         RandomForestRegressor(max_depth=max_depth,
+                               min_samples_split=min_samples_split,
+                               n_estimators=n_estimators))
     ])
     
     pipeline.fit(x_train,y_train)
     y_pred=pipeline.predict(x_test)
-    return calucate_error(y_test,y_pred)
-
-def calucate_error(y_test,y_pred):
-    mean_abs_err=mae(y_test,y_pred)
-    root_mean_squ_err=np.sqrt(mse(y_test,y_pred))
-    r2_Score=r2(y_test,y_pred)
+    (mean_abs_err,root_mean_squ_err,r2_Score)=calucate_error(y_test,y_pred)
     print(f"mae: {mean_abs_err}\n",
           f"rmse: {root_mean_squ_err}\n",
           f"r2 socre: {r2_Score}")
+    
+    scores_file=config['reports']['scores']
+    params_file=config['reports']['params']
+    with open(scores_file,'w') as f:
+        scores={
+            "mae":mean_abs_err,
+            "rmse":root_mean_squ_err,
+            "r2 score": r2_Score
+        }
+        json.dump(scores,f)
+        
+    with open(params_file,'w') as f:
+        params={
+            'max_depth':max_depth,
+            'min_samples_split':min_samples_split,
+            'n_estimators':n_estimators
+        }
+        json.dump(params,f)
+    
+    
    
     
-    
+    os.makedirs(model_dir,exist_ok=True)
+    model_path=os.path.join(model_dir,"model.joblib")
+    joblib.dump(pipeline[-1],model_path)
 
     
-    
-
-
-
-
-
 if __name__=="__main__":
     arg=argparse.ArgumentParser()
     arg.add_argument("--config",default="params.yaml")
