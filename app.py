@@ -6,10 +6,10 @@ import pandas as pd
 import numpy as np
 
 params_path='params.yaml'
-webapp_root='webapp'
+webapp_root='docs'
 
 static_dir=os.path.join(webapp_root,'static')
-template_dir=os.path.join(webapp_root,'templates')
+template_dir=webapp_root
 
 app=Flask(__name__,static_folder=static_dir,template_folder=template_dir)
 
@@ -25,27 +25,11 @@ def predict(data):
     prediction=model.predict(data)
     return prediction[0]
 
-def api_response(request):
-    try:
-        json_data = json.loads(request)
-        print(json_data)
-        if json_data:
-            # Extract keys and values
-            keys = (json_data.keys())
-            values = list(json_data.values())
-            print(keys, values)
+
+       
+           
             
-            # Call the predict function with the extracted data
-            data=pd.DataFrame([values], columns=keys)
-            print(data)
-            #response = predict(data)
-            
-            #print(response)
-            #return {"response": str(response)} # Return the prediction result
-    except Exception as e:
-        print(e)
-        error = {'error': 'Something went wrong!!.Try again'}
-        print({'error': (error)})
+         
      
     
 
