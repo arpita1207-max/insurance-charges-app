@@ -6,3 +6,5 @@ pytest
 tox
 pytest-html
 flake8
+flask
+gunicorn

@@ -13,7 +13,7 @@ InsuranceCharges
 <!-- nav bar -->
 
 <nav class="navbar navbar-expand-lg navbar-light shadow fixed-top" style="background-color: #e3f2fd;">
-    <a class="navbar-brand" href="/">InsuranceChargesPrediction</a>
+    <a class="navbar-brand" href="/">Insurance Charges Prediction</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -54,13 +54,22 @@ InsuranceCharges
                                 placeholder="bmi expected range 15.96  to 53.13"></textarea>
                             <textarea class="form-control" name="children" rows="1"
                                 placeholder="children expected range 0.0 to 5.0"></textarea>
-                            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                                <option selected>Open this region menu</option>
+                            <br>
+                            
+                            <select class="form-select form-select-lg mb-3" name="sex" aria-label=".form-select-lg example">
+                                <option selected>Sex</option>
+                                <option value="male">male</option>
+                                <option value="female">female</option>
+                            </select>
+                            <br>
+                                <select class="form-select form-select-lg mb-3" name="smoker" aria-label=".form-select-lg example">
+                                <option selected>Smoker</option>
                                 <option value="yes">yes</option>
                                 <option value="no">no</option>
                             </select>
-                            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                                <option selected>Open this region menu</option>
+                            <br>
+                            <select class="form-select form-select-lg mb-3" name="region" aria-label=".form-select-lg example">
+                                <option selected>Region</option>
                                 <option value="southeast">southeast</option>
                                 <option value="southwest">southwest</option>
                                 <option value="northwest">northwest</option>

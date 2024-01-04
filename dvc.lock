@@ -53,8 +53,8 @@ stages:
       size: 41743
     - path: src/train_and_evaluate.py
       hash: md5
-      md5: a6e95f38f922542e5be50f30c36fc36b
-      size: 4212
+      md5: 1537def4f8c4079c462e9a95ba500f00
+      size: 4293
     params:
       params.yaml:
         estimators.rfr.params.max_depth: 3
@@ -67,9 +67,9 @@ stages:
       size: 61
     - path: report/scores.json
       hash: md5
-      md5: 2fdcccafc7f1cc4d7d57aff0f9a1a129
+      md5: 0b8f936304e345dffa8f5dc11bdff69b
       size: 85
     - path: saved_models/model.joblib
       hash: md5
-      md5: 4bf7850f576c07a634c7bb9b1b060fa8
-      size: 168289
+      md5: 4078a58c79ad977dea777778620e5053
+      size: 181543

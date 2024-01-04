@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score as r2,mean_absolute_error as mae,mean_squared_error as mse
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import OneHotEncoder,StandardScaler
+import category_encoders as ce
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
@@ -59,7 +60,7 @@ def train_and_evaluate(config_path):
     cat_cols=x_train.select_dtypes(include='object').columns
     num_cols=x_train.select_dtypes(exclude='object').columns
     
-    trf=ColumnTransformer([('encoder',OneHotEncoder(drop='first'),cat_cols),
+    trf=ColumnTransformer([('encoder',ce.OrdinalEncoder(),cat_cols),
                        ('scaler',StandardScaler(),num_cols)
                        ],remainder='passthrough',verbose_feature_names_out=False
                      )
@@ -83,6 +84,7 @@ def train_and_evaluate(config_path):
     pipeline.fit(x_train,y_train)
     y_pred=pipeline.predict(x_test)
     (mean_abs_err,root_mean_squ_err,r2_Score)=calucate_error(y_test,y_pred)
+    print(trf.get_feature_names_out())
     print(f"mae: {mean_abs_err}\n",
           f"rmse: {root_mean_squ_err}\n",
           f"r2 socre: {r2_Score}")
@@ -110,7 +112,8 @@ def train_and_evaluate(config_path):
     
     os.makedirs(model_dir,exist_ok=True)
     model_path=os.path.join(model_dir,"model.joblib")
-    joblib.dump(pipeline[-1],model_path)
+    print(pipeline)
+    joblib.dump(pipeline,model_path)
 
     
 if __name__=="__main__":
