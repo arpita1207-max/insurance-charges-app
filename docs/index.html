@@ -6,7 +6,8 @@ InsuranceCharges
 
 {% block custom_css %}
 <!-- Custom CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="/static/css/main.css">
+<!--{{ url_for('static', filename='css/main.css') }}"> -->
 {% endblock custom_css %}
 
 {% block body %}
@@ -108,5 +109,6 @@ InsuranceCharges
 
         {% block custom_js %}
         <!-- Custom JS -->
-        <script src="{{ url_for('static', filename='script/index.js') }}"></script>
+        <!--{{ url_for('static', filename='script/index.js') }}-->
+        <script src="/static/script/index.js"></script>
         {% endblock custom_js %}    
