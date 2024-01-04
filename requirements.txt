@@ -8,3 +8,4 @@ pytest-html
 flake8
 flask
 gunicorn
+Jinja2
